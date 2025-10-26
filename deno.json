@@ -1,0 +1,24 @@
+{
+  "name": "@makemkvcon-deno/makemkvcon",
+  "version": "0.1.0",
+  "description": "A Deno library for wrapping the makemkvcon command-line tool with TypeScript types, parsers, and high-level API",
+  "license": "MIT",
+  "exports": "./main.ts",
+  "tasks": {
+    "dev": "deno run --watch main.ts",
+    "test": "deno test -A",
+    "test:watch": "deno test -A --watch",
+    "check": "deno check main.ts lib/*.ts"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1"
+  },
+  "publish": {
+    "exclude": [
+      ".git",
+      ".github",
+      ".vscode",
+      ".idea"
+    ]
+  }
+}
