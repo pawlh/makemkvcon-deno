@@ -108,7 +108,7 @@ export async function convertToMkv(
   discIndex: number,
   titles: "all" | number[],
   outputFolder: string,
-  options: (MakeMkvOptions & ConversionOptions) = {},
+  options: MakeMkvOptions & ConversionOptions = {},
 ): Promise<MakeMkvResult> {
   const spec = buildMkvCommand(discIndex, titles, outputFolder, options);
   return execute(spec);
@@ -126,7 +126,7 @@ export async function convertToMkv(
 export async function backupDisc(
   discIndex: number,
   outputFolder: string,
-  options: (MakeMkvOptions & BackupOptions) = {},
+  options: MakeMkvOptions & BackupOptions = {},
 ): Promise<MakeMkvResult> {
   const spec = buildBackupCommand(discIndex, outputFolder, options);
   return execute(spec);
@@ -140,7 +140,7 @@ export async function backupDisc(
  * @returns Result of starting the streaming server
  */
 export async function startStreamingServer(
-  options: (MakeMkvOptions & StreamingOptions) = {},
+  options: MakeMkvOptions & StreamingOptions = {},
 ): Promise<MakeMkvResult> {
   const spec = buildStreamCommand(options);
   return execute(spec);

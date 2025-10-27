@@ -1,11 +1,14 @@
 # makemkvcon-deno
 
-A fully modular Deno library for wrapping the `makemkvcon` command-line tool. Provides TypeScript types, command builders, parsers, and high-level API functions for working with MakeMKV.
+A fully modular Deno library for wrapping the `makemkvcon` command-line tool.
+Provides TypeScript types, command builders, parsers, and high-level API
+functions for working with MakeMKV.
 
 ## Features
 
 - **TypeScript-first**: Comprehensive types for all makemkvcon operations
-- **Modular architecture**: Separated concerns (types, parser, command builder, executor, API)
+- **Modular architecture**: Separated concerns (types, parser, command builder,
+  executor, API)
 - **Robot mode parser**: Parse machine-readable output into structured objects
 - **High-level API**: Convenient functions for common operations
 - **Low-level access**: Direct command building and execution when needed
@@ -16,7 +19,10 @@ A fully modular Deno library for wrapping the `makemkvcon` command-line tool. Pr
 ### From GitHub (Direct Import)
 
 ```typescript
-import { getDiscInfo, AttributeId } from "https://raw.githubusercontent.com/pawlh/makemkvcon-deno/main/main.ts";
+import {
+  AttributeId,
+  getDiscInfo,
+} from "https://raw.githubusercontent.com/pawlh/makemkvcon-deno/main/main.ts";
 ```
 
 ### From JSR (Recommended)
@@ -36,7 +42,7 @@ deno publish
 ### Local Development
 
 ```typescript
-import { getDiscInfo, AttributeId } from "./main.ts";
+import { AttributeId, getDiscInfo } from "./main.ts";
 ```
 
 ## Quick Start
@@ -53,7 +59,7 @@ console.log(result.robotOutput);
 ### Get structured disc information
 
 ```typescript
-import { getStructuredDiscInfo, AttributeId } from "./main.ts";
+import { AttributeId, getStructuredDiscInfo } from "./main.ts";
 
 const { discInfo } = await getStructuredDiscInfo(0);
 if (discInfo) {
@@ -127,13 +133,16 @@ await startStreamingServer({
 The library is organized into modular components:
 
 ### `lib/types.ts`
+
 - All TypeScript type definitions
 - `AttributeId` enum mapping to AP_ItemAttributeId from apdefs.h
-- Option types (MakeMkvOptions, StreamingOptions, BackupOptions, ConversionOptions)
+- Option types (MakeMkvOptions, StreamingOptions, BackupOptions,
+  ConversionOptions)
 - Result types (MakeMkvResult, DiscInfo, TitleInfo, StreamInfo)
 - Robot output types (MSG, PRGC, PRGT, PRGV, DRV, TCOUT, CINFO, TINFO, SINFO)
 
 ### `lib/parser.ts`
+
 - Robot mode output parsing
 - `parseRobotLine()` - Parse individual output lines
 - `parseRobotOutput()` - Parse complete output text
@@ -141,18 +150,22 @@ The library is organized into modular components:
 - Helper functions: `getMessages()`, `getDrives()`, `getTitleCount()`, etc.
 
 ### `lib/command.ts`
+
 - Command argument builders
 - `buildGeneralArgs()` - Build general makemkvcon options
-- Command-specific builders: `buildInfoCommand()`, `buildMkvCommand()`, `buildBackupCommand()`, etc.
+- Command-specific builders: `buildInfoCommand()`, `buildMkvCommand()`,
+  `buildBackupCommand()`, etc.
 - `buildCommand()` - Combine all arguments into final command array
 
 ### `lib/executor.ts`
+
 - Command execution
 - `execute()` - Execute a command specification
 - `executeRaw()` - Execute with custom arguments
 - Handles stdout/stderr capture and robot output parsing
 
 ### `lib/api.ts`
+
 - High-level convenience functions
 - `getDiscInfo()`, `getStructuredDiscInfo()`
 - `listDrives()`, `getAvailableDrives()`
@@ -165,10 +178,12 @@ MakeMKV's robot mode (`-r` flag) outputs machine-readable lines:
 - **MSG**: Message output - `MSG:code,flags,count,message,format,param0,...`
 - **PRGC/PRGT**: Progress titles - `PRGC:code,id,name`
 - **PRGV**: Progress values - `PRGV:current,total,max`
-- **DRV**: Drive information - `DRV:index,visible,enabled,flags,driveName,discName`
+- **DRV**: Drive information -
+  `DRV:index,visible,enabled,flags,driveName,discName`
 - **TCOUT**: Title count - `TCOUT:count`
 - **CINFO**: Disc information - `CINFO:attributeId,messageCode,value`
-- **TINFO**: Title information - `TINFO:titleNumber,attributeId,messageCode,value`
+- **TINFO**: Title information -
+  `TINFO:titleNumber,attributeId,messageCode,value`
 - **SINFO**: Stream information - `SINFO:streamId,attributeId,messageCode,value`
 
 ## AttributeId Enum
@@ -219,7 +234,7 @@ if (result.robotOutput) {
 ### Parse existing robot output
 
 ```typescript
-import { parseRobotOutput, parseDiscInfo } from "./main.ts";
+import { parseDiscInfo, parseRobotOutput } from "./main.ts";
 
 const robotText = `CINFO:1,0,"DVD"
 CINFO:32,0,"MY_DISC"

@@ -12,6 +12,9 @@ Thumbs.db
 # Logs
 *.log
 
+# Test output
+/tmp/
+
 # Test coverage
 coverage/
 

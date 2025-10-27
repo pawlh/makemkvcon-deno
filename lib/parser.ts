@@ -6,7 +6,6 @@
 import type {
   AttributeId,
   DiscInfo,
-  InfoOutput,
   RobotOutput,
   StreamInfo,
   TitleInfo,
@@ -149,11 +148,27 @@ export function parseRobotLine(line: string): RobotOutput | null {
         };
       }
 
-      case "CINFO":
-      case "TINFO":
-      case "SINFO": {
+      case "CINFO": {
+        // CINFO format: attributeId,messageCode,value (3 fields)
         const parts = parseRobotValues(rest);
         if (parts.length < 3) return null;
+        const id = parseInt(parts[0]);
+        const code = parseInt(parts[1]);
+        if (isNaN(id) || isNaN(code)) return null;
+        return {
+          type: "CINFO",
+          id,
+          code,
+          value: parts[2],
+        };
+      }
+
+      case "TINFO":
+      case "SINFO": {
+        // TINFO format: titleNumber,attributeId,messageCode,value (4 fields)
+        // SINFO format: streamId,attributeId,messageCode,value (4 fields)
+        const parts = parseRobotValues(rest);
+        if (parts.length < 4) return null;
         const id = parseInt(parts[0]);
         const code = parseInt(parts[1]);
         if (isNaN(id) || isNaN(code)) return null;
@@ -161,7 +176,7 @@ export function parseRobotLine(line: string): RobotOutput | null {
           type,
           id,
           code,
-          value: parts[2],
+          value: parts[3], // Value is in 4th position
         };
       }
 

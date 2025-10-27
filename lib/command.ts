@@ -154,7 +154,7 @@ export function buildMkvCommand(
   discIndex: number,
   titles: "all" | number[],
   outputFolder: string,
-  options: (MakeMkvOptions & ConversionOptions) = {},
+  options: MakeMkvOptions & ConversionOptions = {},
 ): CommandSpec {
   const titleArg = titles === "all" ? "all" : titles.join(",");
   const conversionArgs = buildConversionArgs(options);
@@ -177,7 +177,7 @@ export function buildMkvCommand(
 export function buildBackupCommand(
   discIndex: number,
   outputFolder: string,
-  options: (MakeMkvOptions & BackupOptions) = {},
+  options: MakeMkvOptions & BackupOptions = {},
 ): CommandSpec {
   const backupArgs = buildBackupArgs(options);
 
@@ -196,7 +196,7 @@ export function buildBackupCommand(
  * Builds stream command for starting streaming server
  */
 export function buildStreamCommand(
-  options: (MakeMkvOptions & StreamingOptions) = {},
+  options: MakeMkvOptions & StreamingOptions = {},
 ): CommandSpec {
   const streamingArgs = buildStreamingArgs(options);
 
