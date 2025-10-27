@@ -4,7 +4,7 @@
  */
 
 import { assertEquals, assertExists } from "@std/assert";
-import { AttributeId, parseDiscInfo, parseRobotOutput } from "./main.ts";
+import { parseDiscInfo, parseRobotOutput } from "./main.ts";
 
 Deno.test("Integration: Parse demo disc from fixture", async () => {
   console.log("\n=== Parsing Demo Disc Fixture ===\n");
