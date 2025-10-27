@@ -25,19 +25,16 @@ Deno.test("Integration: Parse demo disc from fixture", async () => {
 
   // Display disc-level attributes
   console.log("=== Disc Information ===\n");
-  const volumeName = discInfo.attributes.get(AttributeId.VolumeName);
-  const discType = discInfo.attributes.get(AttributeId.Type);
-  const discName = discInfo.attributes.get(AttributeId.Name);
 
-  console.log(`Volume Name: ${volumeName}`);
-  console.log(`Type: ${discType}`);
-  console.log(`Name: ${discName}`);
+  console.log(`Volume Name: ${discInfo.VolumeName}`);
+  console.log(`Type: ${discInfo.Type}`);
+  console.log(`Name: ${discInfo.Name}`);
   console.log(`Total Attributes: ${discInfo.attributes.size}`);
 
   // Verify disc attributes
-  assertEquals(volumeName, "DEMO_MOVIE");
-  assertEquals(discType, "Blu-ray disc");
-  assertEquals(discName, "Demo Movie");
+  assertEquals(discInfo.VolumeName, "DEMO_MOVIE");
+  assertEquals(discInfo.Type, "Blu-ray disc");
+  assertEquals(discInfo.Name, "Demo Movie");
 
   // Display title information
   console.log(`\n=== Titles (${discInfo.titles.length} found) ===\n`);
@@ -48,19 +45,12 @@ Deno.test("Integration: Parse demo disc from fixture", async () => {
     const title = discInfo.titles[i];
     console.log(`Title ${title.id}:`);
 
-    const name = title.attributes.get(AttributeId.Name);
-    const duration = title.attributes.get(AttributeId.Duration);
-    const chapterCount = title.attributes.get(AttributeId.ChapterCount);
-    const sourceFileName = title.attributes.get(AttributeId.SourceFileName);
-    const outputFileName = title.attributes.get(AttributeId.OutputFileName);
-    const fileSize = title.attributes.get(AttributeId.DiskSize);
-
-    if (name) console.log(`  Name: ${name}`);
-    if (duration) console.log(`  Duration: ${duration}`);
-    if (chapterCount) console.log(`  Chapters: ${chapterCount}`);
-    if (sourceFileName) console.log(`  Source: ${sourceFileName}`);
-    if (outputFileName) console.log(`  Output: ${outputFileName}`);
-    if (fileSize) console.log(`  Size: ${fileSize}`);
+    if (title.Name) console.log(`  Name: ${title.Name}`);
+    if (title.Duration) console.log(`  Duration: ${title.Duration}`);
+    if (title.ChapterCount) console.log(`  Chapters: ${title.ChapterCount}`);
+    if (title.SourceFileName) console.log(`  Source: ${title.SourceFileName}`);
+    if (title.OutputFileName) console.log(`  Output: ${title.OutputFileName}`);
+    if (title.DiskSize) console.log(`  Size: ${title.DiskSize}`);
     console.log(`  Attributes: ${title.attributes.size}`);
     console.log(`  Streams: ${title.streams.length}`);
     console.log("");
@@ -78,19 +68,17 @@ Deno.test("Integration: Parse demo disc from fixture", async () => {
   // Verify main title (Title 4)
   const mainTitle = discInfo.titles.find((t) => t.id === 4);
   assertExists(mainTitle);
-  assertEquals(mainTitle.attributes.get(AttributeId.Name), "Demo Movie");
-  assertEquals(mainTitle.attributes.get(AttributeId.Duration), "1:47:28");
-  assertEquals(mainTitle.attributes.get(AttributeId.ChapterCount), "20");
-  assertEquals(mainTitle.attributes.get(AttributeId.DiskSize), "23.2 GB");
+  assertEquals(mainTitle.Name, "Demo Movie");
+  assertEquals(mainTitle.Duration, "1:47:28");
+  assertEquals(mainTitle.ChapterCount, "20");
+  assertEquals(mainTitle.DiskSize, "23.2 GB");
 
   console.log("=== Main Title Verification ===\n");
   console.log("✓ Title 4 (Main Feature):");
-  console.log(`  Name: ${mainTitle.attributes.get(AttributeId.Name)}`);
-  console.log(`  Duration: ${mainTitle.attributes.get(AttributeId.Duration)}`);
-  console.log(
-    `  Chapters: ${mainTitle.attributes.get(AttributeId.ChapterCount)}`,
-  );
-  console.log(`  Size: ${mainTitle.attributes.get(AttributeId.DiskSize)}`);
+  console.log(`  Name: ${mainTitle.Name}`);
+  console.log(`  Duration: ${mainTitle.Duration}`);
+  console.log(`  Chapters: ${mainTitle.ChapterCount}`);
+  console.log(`  Size: ${mainTitle.DiskSize}`);
 
   // Verify each title has valid structure
   for (const title of discInfo.titles) {

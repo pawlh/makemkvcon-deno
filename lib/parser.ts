@@ -3,13 +3,83 @@
  * Handles parsing of various output line types (MSG, PRGC, PRGT, PRGV, DRV, TCOUT, CINFO, TINFO, SINFO)
  */
 
-import type {
-  AttributeId,
-  DiscInfo,
-  RobotOutput,
-  StreamInfo,
-  TitleInfo,
-} from "./types.ts";
+import { AttributeId } from "./types.ts";
+import type { DiscInfo, RobotOutput, StreamInfo, TitleInfo } from "./types.ts";
+
+/**
+ * Helper function to add getter properties to an object from a Map
+ * Reduces boilerplate when creating objects with convenience getters
+ */
+function addGetters<T extends Record<string, AttributeId>>(
+  target: any,
+  map: Map<AttributeId, string>,
+  getterMap: T,
+): void {
+  for (const [propName, attrId] of Object.entries(getterMap)) {
+    Object.defineProperty(target, propName, {
+      get: () => map.get(attrId),
+      enumerable: true,
+    });
+  }
+}
+
+/**
+ * Mapping of all AttributeId properties to their enum values
+ * Used to automatically create getters for all attributes on every type
+ */
+const ALL_ATTRIBUTE_GETTERS: Record<string, AttributeId> = {
+  Unknown: AttributeId.Unknown,
+  Type: AttributeId.Type,
+  Name: AttributeId.Name,
+  LangCode: AttributeId.LangCode,
+  LangName: AttributeId.LangName,
+  CodecId: AttributeId.CodecId,
+  CodecShort: AttributeId.CodecShort,
+  CodecLong: AttributeId.CodecLong,
+  ChapterCount: AttributeId.ChapterCount,
+  Duration: AttributeId.Duration,
+  DiskSize: AttributeId.DiskSize,
+  DiskSizeBytes: AttributeId.DiskSizeBytes,
+  StreamTypeExtension: AttributeId.StreamTypeExtension,
+  Bitrate: AttributeId.Bitrate,
+  AudioChannelsCount: AttributeId.AudioChannelsCount,
+  AngleInfo: AttributeId.AngleInfo,
+  SourceFileName: AttributeId.SourceFileName,
+  AudioSampleRate: AttributeId.AudioSampleRate,
+  AudioSampleSize: AttributeId.AudioSampleSize,
+  VideoSize: AttributeId.VideoSize,
+  VideoAspectRatio: AttributeId.VideoAspectRatio,
+  VideoFrameRate: AttributeId.VideoFrameRate,
+  StreamFlags: AttributeId.StreamFlags,
+  DateTime: AttributeId.DateTime,
+  OriginalTitleId: AttributeId.OriginalTitleId,
+  SegmentsCount: AttributeId.SegmentsCount,
+  SegmentsMap: AttributeId.SegmentsMap,
+  OutputFileName: AttributeId.OutputFileName,
+  MetadataLanguageCode: AttributeId.MetadataLanguageCode,
+  MetadataLanguageName: AttributeId.MetadataLanguageName,
+  TreeInfo: AttributeId.TreeInfo,
+  PanelTitle: AttributeId.PanelTitle,
+  VolumeName: AttributeId.VolumeName,
+  OrderWeight: AttributeId.OrderWeight,
+  OutputFormat: AttributeId.OutputFormat,
+  OutputFormatDescription: AttributeId.OutputFormatDescription,
+  SeamlessInfo: AttributeId.SeamlessInfo,
+  PanelText: AttributeId.PanelText,
+  MkvFlags: AttributeId.MkvFlags,
+  MkvFlagsText: AttributeId.MkvFlagsText,
+  AudioChannelLayoutName: AttributeId.AudioChannelLayoutName,
+  OutputCodecShort: AttributeId.OutputCodecShort,
+  OutputConversionType: AttributeId.OutputConversionType,
+  OutputAudioSampleRate: AttributeId.OutputAudioSampleRate,
+  OutputAudioSampleSize: AttributeId.OutputAudioSampleSize,
+  OutputAudioChannelsCount: AttributeId.OutputAudioChannelsCount,
+  OutputAudioChannelLayoutName: AttributeId.OutputAudioChannelLayoutName,
+  OutputAudioChannelLayout: AttributeId.OutputAudioChannelLayout,
+  OutputAudioMixDescription: AttributeId.OutputAudioMixDescription,
+  Comment: AttributeId.Comment,
+  OffsetSequenceId: AttributeId.OffsetSequenceId,
+};
 
 /**
  * Parses comma-separated values with support for quoted strings and escaping
@@ -237,13 +307,27 @@ export function parseDiscInfo(robotOutput: RobotOutput[]): DiscInfo {
     }
   }
 
-  // Convert titles map to array
-  const titles = Array.from(titlesMap.values());
+  // Convert titles map to array and add convenience getters
+  const titles = Array.from(titlesMap.values()).map((title) => {
+    const result: any = {
+      id: title.id,
+      attributes: title.attributes,
+      streams: title.streams,
+    };
 
-  return {
+    addGetters(result, title.attributes, ALL_ATTRIBUTE_GETTERS);
+
+    return result as TitleInfo;
+  });
+
+  const result: any = {
     attributes: discAttributes,
     titles,
   };
+
+  addGetters(result, discAttributes, ALL_ATTRIBUTE_GETTERS);
+
+  return result as DiscInfo;
 }
 
 /**
@@ -288,12 +372,26 @@ export function parseDiscInfoAdvanced(robotOutput: RobotOutput[]): DiscInfo {
   // This requires understanding the SINFO id encoding
   // For simplicity, we'll leave streams separate for now
 
-  const titles = Array.from(titlesMap.values());
+  const titles = Array.from(titlesMap.values()).map((title) => {
+    const result: any = {
+      id: title.id,
+      attributes: title.attributes,
+      streams: title.streams,
+    };
 
-  return {
+    addGetters(result, title.attributes, ALL_ATTRIBUTE_GETTERS);
+
+    return result as TitleInfo;
+  });
+
+  const result: any = {
     attributes: discAttributes,
     titles,
   };
+
+  addGetters(result, discAttributes, ALL_ATTRIBUTE_GETTERS);
+
+  return result as DiscInfo;
 }
 
 /**

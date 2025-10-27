@@ -205,9 +205,66 @@ export interface MakeMkvResult {
 }
 
 /**
+ * All AttributeId properties available as convenience getters
+ */
+export interface AttributeGetters {
+  readonly Unknown?: string;
+  readonly Type?: string;
+  readonly Name?: string;
+  readonly LangCode?: string;
+  readonly LangName?: string;
+  readonly CodecId?: string;
+  readonly CodecShort?: string;
+  readonly CodecLong?: string;
+  readonly ChapterCount?: string;
+  readonly Duration?: string;
+  readonly DiskSize?: string;
+  readonly DiskSizeBytes?: string;
+  readonly StreamTypeExtension?: string;
+  readonly Bitrate?: string;
+  readonly AudioChannelsCount?: string;
+  readonly AngleInfo?: string;
+  readonly SourceFileName?: string;
+  readonly AudioSampleRate?: string;
+  readonly AudioSampleSize?: string;
+  readonly VideoSize?: string;
+  readonly VideoAspectRatio?: string;
+  readonly VideoFrameRate?: string;
+  readonly StreamFlags?: string;
+  readonly DateTime?: string;
+  readonly OriginalTitleId?: string;
+  readonly SegmentsCount?: string;
+  readonly SegmentsMap?: string;
+  readonly OutputFileName?: string;
+  readonly MetadataLanguageCode?: string;
+  readonly MetadataLanguageName?: string;
+  readonly TreeInfo?: string;
+  readonly PanelTitle?: string;
+  readonly VolumeName?: string;
+  readonly OrderWeight?: string;
+  readonly OutputFormat?: string;
+  readonly OutputFormatDescription?: string;
+  readonly SeamlessInfo?: string;
+  readonly PanelText?: string;
+  readonly MkvFlags?: string;
+  readonly MkvFlagsText?: string;
+  readonly AudioChannelLayoutName?: string;
+  readonly OutputCodecShort?: string;
+  readonly OutputConversionType?: string;
+  readonly OutputAudioSampleRate?: string;
+  readonly OutputAudioSampleSize?: string;
+  readonly OutputAudioChannelsCount?: string;
+  readonly OutputAudioChannelLayoutName?: string;
+  readonly OutputAudioChannelLayout?: string;
+  readonly OutputAudioMixDescription?: string;
+  readonly Comment?: string;
+  readonly OffsetSequenceId?: string;
+}
+
+/**
  * Structured disc information
  */
-export interface DiscInfo {
+export interface DiscInfo extends AttributeGetters {
   /** Disc attributes */
   attributes: Map<AttributeId, string>;
   /** Titles on the disc */
@@ -217,7 +274,7 @@ export interface DiscInfo {
 /**
  * Structured title information
  */
-export interface TitleInfo {
+export interface TitleInfo extends AttributeGetters {
   /** Title ID */
   id: number;
   /** Title attributes */
@@ -229,7 +286,7 @@ export interface TitleInfo {
 /**
  * Structured stream information
  */
-export interface StreamInfo {
+export interface StreamInfo extends AttributeGetters {
   /** Stream ID */
   id: number;
   /** Stream attributes */
