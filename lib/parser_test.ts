@@ -13,7 +13,11 @@ import {
   parseRobotOutput,
   parseRobotValues,
 } from "./parser.ts";
-import { AttributeId } from "./types.ts";
+import {
+  AttributeId,
+  DriveInfoDiscType,
+  DriveInfoDriveStatus,
+} from "./types.ts";
 
 // ============================================================================
 // parseRobotValues Tests
@@ -85,17 +89,19 @@ Deno.test("parser: parseRobotLine - MSG with parameters", () => {
 });
 
 Deno.test("parser: parseRobotLine - DRV output", () => {
-  const line = 'DRV:0,1,1,0,"DVD+R-DL HL-DT-ST DVDRAM GH24NSC0","DISC_NAME"';
+  const line =
+    'DRV:0,2,999,0,"DVD+R-DL HL-DT-ST DVDRAM GH24NSC0","DISC_NAME","/dev/rdisk0"';
   const result = parseRobotLine(line);
   assertExists(result);
   assertEquals(result?.type, "DRV");
   if (result?.type === "DRV") {
     assertEquals(result.index, 0);
-    assertEquals(result.visible, true);
-    assertEquals(result.enabled, true);
-    assertEquals(result.flags, 0);
+    assertEquals(result.driveStatus, DriveInfoDriveStatus.Closed);
+    assertEquals(result.unknown, "999");
+    assertEquals(result.discType, DriveInfoDiscType.Cd);
     assertEquals(result.driveName, "DVD+R-DL HL-DT-ST DVDRAM GH24NSC0");
-    assertEquals(result.discName, "DISC_NAME");
+    assertEquals(result.mediaTitle, "DISC_NAME");
+    assertEquals(result.drivePath, "/dev/rdisk0");
   }
 });
 
@@ -241,15 +247,15 @@ TCOUT:3`,
 
 Deno.test("parser: getDrives - extracts drive info from robot output", () => {
   const output = parseRobotOutput(
-    'DRV:0,1,1,0,"Drive 1","Disc 1"\nDRV:1,1,0,0,"Drive 2",""',
+    'DRV:0,2,999,0,"Drive 1","Disc 1","/dev/rdisk0"\nDRV:1,1,999,12,"Drive 2","Disc 1","/dev/rdisk1"',
   );
 
   const drives = getDrives(output);
   assertEquals(drives.length, 2);
   assertEquals(drives[0].index, 0);
-  assertEquals(drives[0].enabled, true);
+  assertEquals(drives[0].discType, DriveInfoDiscType.Cd);
   assertEquals(drives[1].index, 1);
-  assertEquals(drives[1].enabled, false);
+  assertEquals(drives[1].discType, DriveInfoDiscType.BluRay);
 });
 
 Deno.test("parser: getTitleCount - extracts title count", () => {

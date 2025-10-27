@@ -145,18 +145,36 @@ export interface ProgressValue {
   max: number;
 }
 
+export enum DriveInfoDriveStatus {
+  NotSpecified,
+  Empty, // 9
+  Open, //  1
+  Closed, // 2
+  Loading, // 3
+  NotAttached, // 256
+}
+
+export enum DriveInfoDiscType {
+  NotSpecified,
+  Cd, // 0 or null
+  Dvd, // 1
+  BluRay, // 12 or 28
+}
+
 /**
  * Drive scan output
- * Format: DRV:index,visible,enabled,flags,drive name,disc name
+ * Documented Format: DRV:index,visible,enabled,flags,drive name,disc name
+ * Actual Format: DRV:index,driveStatus,unknown,discType,driveDetails,mediaTitle,drivePath
  */
 export interface DriveInfo {
   type: "DRV";
   index: number;
-  visible: boolean;
-  enabled: boolean;
-  flags: number;
+  driveStatus: DriveInfoDriveStatus;
+  unknown: string;
+  discType: DriveInfoDiscType;
   driveName: string;
-  discName: string;
+  mediaTitle: string;
+  drivePath: string;
 }
 
 /**

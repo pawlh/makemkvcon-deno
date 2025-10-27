@@ -3,8 +3,14 @@
  * Handles parsing of various output line types (MSG, PRGC, PRGT, PRGV, DRV, TCOUT, CINFO, TINFO, SINFO)
  */
 
-import { AttributeId } from "./types.ts";
-import type { DiscInfo, RobotOutput, StreamInfo, TitleInfo } from "./types.ts";
+import {
+  DiscInfo,
+  DriveInfoDiscType,
+  RobotOutput,
+  StreamInfo,
+  TitleInfo,
+} from "./types.ts";
+import { AttributeId, DriveInfoDriveStatus } from "./types.ts";
 
 /**
  * Helper function to add getter properties to an object from a Map
@@ -193,17 +199,56 @@ export function parseRobotLine(line: string): RobotOutput | null {
       case "DRV": {
         const parts = parseRobotValues(rest);
         if (parts.length < 6) return null;
+
         const index = parseInt(parts[0]);
-        const flags = parseInt(parts[3]);
-        if (isNaN(index) || isNaN(flags)) return null;
+        if (isNaN(index)) return null;
+
+        let driveStatus: DriveInfoDriveStatus;
+        switch (parts[1]) {
+          case "0":
+            driveStatus = DriveInfoDriveStatus.Empty;
+            break;
+          case "1":
+            driveStatus = DriveInfoDriveStatus.Open;
+            break;
+          case "2":
+            driveStatus = DriveInfoDriveStatus.Closed;
+            break;
+          case "3":
+            driveStatus = DriveInfoDriveStatus.Loading;
+            break;
+          case "256":
+            driveStatus = DriveInfoDriveStatus.NotAttached;
+            break;
+          default:
+            driveStatus = DriveInfoDriveStatus.NotSpecified;
+        }
+
+        let discType: DriveInfoDiscType;
+        switch (parts[3]) {
+          case "":
+          case "0":
+            discType = DriveInfoDiscType.Cd;
+            break;
+          case "1":
+            discType = DriveInfoDiscType.Dvd;
+            break;
+          case "12":
+          case "28":
+            discType = DriveInfoDiscType.BluRay;
+            break;
+          default:
+            discType = DriveInfoDiscType.NotSpecified;
+        }
         return {
           type: "DRV",
           index,
-          visible: parts[1] === "1",
-          enabled: parts[2] === "1",
-          flags,
+          driveStatus,
+          unknown: parts[2], // should be 1, but always 999 in practice: https://github.com/automatic-ripping-machine/automatic-ripping-machine/wiki/MakeMKV-Codes#info-output-explained
+          discType,
           driveName: parts[4],
-          discName: parts[5],
+          mediaTitle: parts[5],
+          drivePath: parts[6],
         };
       }
 
