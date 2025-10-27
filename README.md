@@ -7,12 +7,9 @@ functions for working with MakeMKV.
 ## Features
 
 - **TypeScript-first**: Comprehensive types for all makemkvcon operations
-- **Modular architecture**: Separated concerns (types, parser, command builder,
-  executor, API)
 - **Robot mode parser**: Parse machine-readable output into structured objects
 - **High-level API**: Convenient functions for common operations
 - **Low-level access**: Direct command building and execution when needed
-- **Fully tested**: Comprehensive test suite with 31+ tests
 
 ## Installation
 
@@ -59,17 +56,18 @@ console.log(result.robotOutput);
 ### Get structured disc information
 
 ```typescript
-import { AttributeId, getStructuredDiscInfo } from "./main.ts";
+import { getStructuredDiscInfo } from "./main.ts";
 
 const { discInfo } = await getStructuredDiscInfo(0);
 if (discInfo) {
-  console.log("Volume:", discInfo.attributes.get(AttributeId.VolumeName));
+  console.log("Volume:", discInfo.VolumeName);
+  console.log("Type:", discInfo.Type);
   console.log("Titles:", discInfo.titles.length);
 
   for (const title of discInfo.titles) {
-    const name = title.attributes.get(AttributeId.Name);
-    const duration = title.attributes.get(AttributeId.Duration);
-    console.log(`Title ${title.id}: ${name} (${duration})`);
+    console.log(`Title ${title.id}: ${title.Name} (${title.Duration})`);
+    console.log(`  Size: ${title.DiskSize}`);
+    console.log(`  Chapters: ${title.ChapterCount}`);
   }
 }
 ```
@@ -136,6 +134,7 @@ The library is organized into modular components:
 
 - All TypeScript type definitions
 - `AttributeId` enum mapping to AP_ItemAttributeId from apdefs.h
+- `AttributeGetters` interface with all 52 AttributeId convenience properties
 - Option types (MakeMkvOptions, StreamingOptions, BackupOptions,
   ConversionOptions)
 - Result types (MakeMkvResult, DiscInfo, TitleInfo, StreamInfo)
@@ -200,7 +199,7 @@ enum AttributeId {
   SourceFileName = 16,
   VolumeName = 32,
   OutputFileName = 27,
-  // ... and many more
+  // ... and more
 }
 ```
 
@@ -239,10 +238,17 @@ import { parseDiscInfo, parseRobotOutput } from "./main.ts";
 const robotText = `CINFO:1,0,"DVD"
 CINFO:32,0,"MY_DISC"
 TCOUT:2
-TINFO:0,2,0,"Title 1"`;
+TINFO:0,2,0,"Title 1"
+TINFO:0,9,0,"1:30:00"`;
 
 const parsed = parseRobotOutput(robotText);
 const discInfo = parseDiscInfo(parsed);
+
+// Access with convenience properties
+console.log("Type:", discInfo.Type); // "DVD"
+console.log("Volume:", discInfo.VolumeName); // "MY_DISC"
+console.log("Title Name:", discInfo.titles[0].Name); // "Title 1"
+console.log("Duration:", discInfo.titles[0].Duration); // "1:30:00"
 ```
 
 ## Testing
