@@ -45,7 +45,6 @@
  * @module
  */
 
-// Export all types
 export type {
   BackupOptions,
   ConversionOptions,
@@ -64,10 +63,8 @@ export type {
   TitleInfo,
 } from "./lib/types.ts";
 
-// Re-export the enum (exported as value, not type)
 export { AttributeId } from "./lib/types.ts";
 
-// Export parser functions
 export {
   getAttribute,
   getDrives,
@@ -80,7 +77,6 @@ export {
   parseRobotValues,
 } from "./lib/parser.ts";
 
-// Export command builders
 export {
   buildBackupArgs,
   buildBackupCommand,
@@ -95,7 +91,6 @@ export {
 } from "./lib/command.ts";
 export type { CommandSpec } from "./lib/command.ts";
 
-// Export executor functions
 export { execute, executeRaw } from "./lib/executor.ts";
 
 // Export high-level API functions (recommended for most use cases)

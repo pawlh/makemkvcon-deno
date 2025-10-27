@@ -104,8 +104,8 @@ export function buildConversionArgs(
  * Command specification for makemkvcon
  */
 export interface CommandSpec {
-  /** The makemkvcon command (info, mkv, backup, stream) */
-  command: string;
+  /** The makemkvcon command */
+  command: "info" | "mkv" | "backup" | "stream";
   /** Command-specific arguments */
   args: string[];
   /** General options */

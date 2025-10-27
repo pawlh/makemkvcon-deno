@@ -269,6 +269,35 @@ export function parseRobotOutput(output: string): RobotOutput[] {
 }
 
 /**
+ * Helper function to build a DiscInfo object from a map of titles and streams
+ */
+function buildDiscResult(
+  titlesMap: Map<number, TitleInfo>,
+  discAttributes: Map<AttributeId, string>,
+) {
+  const titles = Array.from(titlesMap.values()).map((title) => {
+    const result: any = {
+      id: title.id,
+      attributes: title.attributes,
+      streams: title.streams,
+    };
+
+    addGetters(result, title.attributes, ALL_ATTRIBUTE_GETTERS);
+
+    return result as TitleInfo;
+  });
+
+  const result: any = {
+    attributes: discAttributes,
+    titles,
+  };
+
+  addGetters(result, discAttributes, ALL_ATTRIBUTE_GETTERS);
+
+  return result as DiscInfo;
+}
+
+/**
  * Converts robot output to structured disc information
  * Organizes CINFO, TINFO, and SINFO lines into a hierarchical structure
  *
@@ -307,27 +336,7 @@ export function parseDiscInfo(robotOutput: RobotOutput[]): DiscInfo {
     }
   }
 
-  // Convert titles map to array and add convenience getters
-  const titles = Array.from(titlesMap.values()).map((title) => {
-    const result: any = {
-      id: title.id,
-      attributes: title.attributes,
-      streams: title.streams,
-    };
-
-    addGetters(result, title.attributes, ALL_ATTRIBUTE_GETTERS);
-
-    return result as TitleInfo;
-  });
-
-  const result: any = {
-    attributes: discAttributes,
-    titles,
-  };
-
-  addGetters(result, discAttributes, ALL_ATTRIBUTE_GETTERS);
-
-  return result as DiscInfo;
+  return buildDiscResult(titlesMap, discAttributes);
 }
 
 /**
@@ -372,26 +381,7 @@ export function parseDiscInfoAdvanced(robotOutput: RobotOutput[]): DiscInfo {
   // This requires understanding the SINFO id encoding
   // For simplicity, we'll leave streams separate for now
 
-  const titles = Array.from(titlesMap.values()).map((title) => {
-    const result: any = {
-      id: title.id,
-      attributes: title.attributes,
-      streams: title.streams,
-    };
-
-    addGetters(result, title.attributes, ALL_ATTRIBUTE_GETTERS);
-
-    return result as TitleInfo;
-  });
-
-  const result: any = {
-    attributes: discAttributes,
-    titles,
-  };
-
-  addGetters(result, discAttributes, ALL_ATTRIBUTE_GETTERS);
-
-  return result as DiscInfo;
+  return buildDiscResult(titlesMap, discAttributes);
 }
 
 /**
