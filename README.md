@@ -178,7 +178,9 @@ MakeMKV's robot mode (`-r` flag) outputs machine-readable lines:
 - **PRGC/PRGT**: Progress titles - `PRGC:code,id,name`
 - **PRGV**: Progress values - `PRGV:current,total,max`
 - **DRV**: Drive information -
-  `DRV:index,visible,enabled,flags,driveName,discName`
+  `DRV:index,driveStatus,unknown,discType,driveDetails,mediaTitle,drivePath`
+  - the official documentation shows
+    `DRV:index,visible,enabled,flags,drive name,disc name` but this is incorrect
 - **TCOUT**: Title count - `TCOUT:count`
 - **CINFO**: Disc information - `CINFO:attributeId,messageCode,value`
 - **TINFO**: Title information -
